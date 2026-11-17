@@ -1,9 +1,14 @@
-import {cpSync,mkdirSync,writeFileSync} from 'node:fs';
+import {cpSync,mkdirSync,writeFileSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {buildDossier} from './vendor/makefun-game.ts';
-const root=fileURLToPath(new URL('.',import.meta.url)),out=process.env.MAKEFUN_OUTPUT_DIR??'/output';
+const root=fileURLToPath(new URL('.',import.meta.url));
+const out=process.env.MAKEFUN_OUTPUT_DIR??'/output';
+const images=readdirSync(join(root,'screenshots')).filter(name=>/\.(png|jpe?g)$/i.test(name));
+if(images.length<3||images.length>4)throw Error('Provide 3 or 4 real browser screenshots before packaging the game.');
 mkdirSync(out,{recursive:true});
 cpSync(join(root,'game'),join(out,'game'),{recursive:true});
 cpSync(join(root,'screenshots'),join(out,'screenshots'),{recursive:true});
-writeFileSync(join(out,'dossier.json'),buildDossier(out,{text_max_bytes:163840,screenshots:{max:4,max_bytes:262144},game_max_files:993,game_max_bytes:50331648,game_path_max_bytes:1000}));
+const dossier=buildDossier(out,{text_max_bytes:163840,screenshots:{max:4,max_bytes:262144},game_max_files:993,game_max_bytes:50331648,game_path_max_bytes:1000});
+writeFileSync(join(out,'dossier.json'),dossier);
+console.log('Game packaged with '+images.length+' screenshots.');
