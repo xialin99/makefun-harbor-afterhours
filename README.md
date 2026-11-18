@@ -4,11 +4,11 @@ An original open-city crime game with on-foot travel, vehicles, traffic, police,
 
 ## Run
 
-Serve game/ with a static server and open index.html in a desktop browser. No build or network connection is required.
+Serve `game/` over local HTTP and open its index page in a desktop browser. The game uses the bundled Three.js renderer when WebGL is available and falls back to the overhead view if renderer initialization fails. Play does not require an external network connection.
 
 ## Current status
 
-Logic prototype. Node regression tests verify entering and exiting cars, movement, mission gating, rewards and save/load. Browser rendering and gameplay remain unverified; not submitted.
+The 3D prototype includes a following camera, city blocks, animated traffic and mission markers. Node regression tests cover entering and exiting cars, movement, mission gating, rewards and save/load. Browser rendering and the feel of the new camera are still unverified. Capture three or four images from the current browser build before creating the competition dossier. The game has not been submitted.
 
 These are experimental competition projects. No prize has been received.
 
@@ -18,4 +18,4 @@ Source code, the MIT license, and the competition provenance anchor are included
 
 ## License
 
-MIT; see LICENSE.
+Game code is MIT licensed. The bundled Three.js distribution retains its license in `game/vendor/LICENSE`.

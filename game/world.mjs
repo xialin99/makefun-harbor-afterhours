@@ -6,10 +6,31 @@ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function road(x,y){const a=x%ROAD,b=y%ROAD;return a<90||b<90}
 export function solid(x,y){return x<20||y<20||x>SIZE-20||y>SIZE-20||!road(x,y)}
 // Buildings occupy block interiors; named destinations sit in paved courtyards.
-export function blocked(x,y){if(places.some(p=>Math.hypot(x-p.x,y-p.y)<100))return false;return solid(x,y)}
-export function createWorld(){const cars=[];for(let i=0;i<42;i++){const horizontal=i%2===0;cars.push({id:i,x:horizontal?120+i*43:Math.floor(i/5)*240+44,y:horizontal?Math.floor(i/5)*240+44:120+i*43,a:horizontal?0:Math.PI/2,v:35+i%5*8,color:i%5,traffic:true,hp:100})}cars.push({id:42,x:360,y:330,a:-Math.PI/2,v:0,color:2,traffic:false,hp:100});return {version:1,time:0,player:{x:360,y:370,a:0,hp:100,cash:0,car:null},cars,peds:Array.from({length:70},(_,i)=>({x:110+(i%10)*240,y:78+Math.floor(i/10)*240,a:i*.9,hp:1})),police:[],bullets:[],sparks:[],wanted:0,heat:0,mission:0,completed:false,notice:'Find a car near the garage. E to enter.',noticeTime:7,cooldown:0,policeTimer:0,arrest:0}}
+export function courtyardBlock(x, y) {
+  return places.some(place => Math.hypot(place.x-x-155, place.y-y-155)<160);
+}
+const landmarkFootprints = [
+  [[0, 88, 16]],
+  [[0, 85, 17]],
+  [[-32, 7, 10], [32, 7, 10]],
+  [[0, 24, 18]],
+];
+export const LANDMARK_OFFSET = 92;
+function hitsLandmark(x, y) {
+  return places.some((place, index) => landmarkFootprints[index].some(([offset, width, depth]) =>
+    Math.abs(x - place.x - offset) < width / 2 &&
+    Math.abs(y - place.y - LANDMARK_OFFSET) < depth / 2,
+  ));
+}
+export function blocked(x, y) {
+  if (x<20 || y<20 || x>SIZE-20 || y>SIZE-20) return true;
+  if (hitsLandmark(x,y)) return true;
+  if (road(x,y) || places.some(place => Math.hypot(x-place.x,y-place.y)<100)) return false;
+  return !courtyardBlock(Math.floor(x/ROAD)*ROAD,Math.floor(y/ROAD)*ROAD);
+}
+export function createWorld(){const cars=[];for(let i=0;i<42;i++){const horizontal=i%2===0;cars.push({id:i,x:horizontal?120+i*43:Math.floor(i/5)*240+44,y:horizontal?Math.floor(i/5)*240+44:120+i*43,a:horizontal?0:Math.PI/2,v:35+i%5*8,color:i%5,traffic:true,hp:100})}cars.push({id:42,x:360,y:330,a:-Math.PI/2,v:0,color:2,traffic:false,hp:100});return {version:1,time:0,player:{x:360,y:370,a:0,hp:100,cash:0,car:null},cars,peds:Array.from({length:70},(_,i)=>({x:110+(i%10)*240,y:78+Math.floor(i/10)*240,a:i*.9,hp:1})).filter(a=>Math.hypot(a.x-360,a.y-360)>140),police:[],bullets:[],sparks:[],wanted:0,heat:0,mission:0,completed:false,notice:'Find a car near the garage. E to enter.',noticeTime:7,cooldown:0,policeTimer:0,arrest:0}}
 export function notify(w,text){w.notice=text;w.noticeTime=5}
-export function interact(w){const p=w.player;if(p.car!==null){const c=w.cars.find(c=>c.id===p.car);const offsets=[[-30,0],[30,0],[0,-30],[0,30]];const exit=offsets.map(([x,y])=>({x:c.x+x,y:c.y+y})).find(q=>!blocked(q.x,q.y));if(exit){p.x=exit.x;p.y=exit.y;p.car=null;c.v=0;notify(w,'On foot. WASD to move.')}return}const c=w.cars.filter(c=>c.hp>0).sort((a,b)=>distance(a,p)-distance(b,p))[0];if(c&&distance(c,p)<65){p.car=c.id;p.x=c.x;p.y=c.y;c.traffic=false;w.wanted=Math.max(w.wanted,1);w.heat=12;notify(w,'Vehicle acquired. Follow the yellow route marker.')}else notify(w,'No vehicle nearby. Move within reach and press E.')}
+export function interact(w){const p=w.player;if(p.car!==null){const c=w.cars.find(c=>c.id===p.car);const offsets=[[-30,0],[30,0],[0,-30],[0,30]];const exit=offsets.map(([x,y])=>({x:c.x+x,y:c.y+y})).find(q=>!blocked(q.x,q.y));if(exit){p.x=exit.x;p.y=exit.y;p.car=null;c.v=0;notify(w,'On foot. WASD to move.')}return}const c=w.cars.filter(c=>c.hp>0).sort((a,b)=>distance(a,p)-distance(b,p))[0];if(c&&distance(c,p)<65){p.car=c.id;p.x=c.x;p.y=c.y;c.traffic=false;if(c.id!==42){w.wanted=Math.max(w.wanted,1);w.heat=12}notify(w,'Vehicle acquired. Follow the yellow route marker.')}else notify(w,'No vehicle nearby. Move within reach and press E.')}
 export function shoot(w,angle){if(w.cooldown>0)return;const p=w.player;w.bullets.push({x:p.x,y:p.y,vx:Math.cos(angle)*650,vy:Math.sin(angle)*650,life:.7});w.cooldown=.22;w.wanted=Math.min(5,Math.max(1,w.wanted+.15));w.heat=18}
 function move(body,dx,dy){let hit=false;if(!blocked(body.x+dx,body.y))body.x+=dx;else hit=true;if(!blocked(body.x,body.y+dy))body.y+=dy;else hit=true;return hit}
 export function step(w,input,dt){dt=clamp(dt,0,.05);w.time+=dt;w.noticeTime=Math.max(0,w.noticeTime-dt);w.cooldown=Math.max(0,w.cooldown-dt);const p=w.player;if(p.hp<=0)return;
@@ -23,6 +44,7 @@ export function step(w,input,dt){dt=clamp(dt,0,.05);w.time+=dt;w.noticeTime=Math
  const task=missions[w.mission];if(task&&!w.completed&&distance(p,places[task.target])<70){if(task.car&&p.car===null)notify(w,'Mara needs the car as well. Bring a vehicle.');else if(task.clean&&w.wanted>0)notify(w,'Lose the police before meeting the contact.');else{p.cash+=task.pay;w.mission++;if(task.heat){w.wanted=Math.max(w.wanted,task.heat);w.heat=20}if(w.mission===missions.length){w.completed=true;notify(w,'The ledger is live. Harbor liberated. Free roam unlocked.')}else notify(w,'Mission complete +$'+task.pay+' · '+missions[w.mission].title)}}
  if(p.hp<=0){p.hp=0;notify(w,'Busted. Load your save or start a new night.')}
 }
-export function saveWorld(w){return JSON.stringify({version:1,player:{...w.player,car:null},mission:w.mission,completed:w.completed})}
-export function loadWorld(text){const saved=JSON.parse(text);if(saved.version!==1||!saved.player||!Number.isFinite(saved.player.x)||!Number.isFinite(saved.player.y)||!Number.isFinite(saved.player.hp)||!Number.isFinite(saved.player.cash))throw Error('Invalid save');const w=createWorld();Object.assign(w.player,saved.player,{x:clamp(saved.player.x,30,SIZE-30),y:clamp(saved.player.y,30,SIZE-30),hp:clamp(saved.player.hp,0,100),car:null});w.mission=clamp(Math.trunc(saved.mission)||0,0,missions.length);w.completed=w.mission===missions.length;return w}
+export function saveWorld(w){if(w.player.hp<=0)throw Error('Cannot save a failed story');return JSON.stringify({version:1,player:{...w.player,car:null},mission:w.mission,completed:w.completed})}
+export function loadWorld(text){const saved=JSON.parse(text);if(saved.version!==1||!saved.player||saved.player.hp<=0||!Number.isFinite(saved.player.x)||!Number.isFinite(saved.player.y)||!Number.isFinite(saved.player.hp)||!Number.isFinite(saved.player.cash))throw Error('Invalid save');const w=createWorld();Object.assign(w.player,saved.player,{x:clamp(saved.player.x,30,SIZE-30),y:clamp(saved.player.y,30,SIZE-30),hp:clamp(saved.player.hp,0,100),car:null});w.mission=clamp(Math.trunc(saved.mission)||0,0,missions.length);w.completed=w.mission===missions.length;return w}
+
 
