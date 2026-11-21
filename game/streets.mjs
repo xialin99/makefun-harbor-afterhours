@@ -17,18 +17,22 @@ export function sign(parent, label, color, x, y, z, width, rotation = 0) {
   canvas.width = 512;
   canvas.height = 96;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#172735';
-  ctx.fillRect(0, 0, 512, 96);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 4;
-  ctx.strokeRect(6, 6, 500, 84);
-  ctx.fillStyle = color;
-  ctx.font = 'bold 49px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(label, 256, 50, 464);
+  function drawLabel(){
+    ctx.fillStyle = '#172735';
+    ctx.fillRect(0, 0, 512, 96);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(6, 6, 500, 84);
+    ctx.fillStyle = color;
+    ctx.font = 'bold 49px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(window.t(label), 256, 50, 464);
+  }
+  drawLabel();
   const map = new T.CanvasTexture(canvas);
   map.colorSpace = T.SRGBColorSpace;
+  window.addEventListener('ui-language-change',()=>{drawLabel();map.needsUpdate=true;});
   const mesh = new T.Mesh(new T.PlaneGeometry(width, width * 96 / 512),
     new T.MeshBasicMaterial({ map, side: T.DoubleSide }));
   mesh.position.set(x, y, z);
