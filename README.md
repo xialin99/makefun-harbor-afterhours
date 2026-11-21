@@ -14,6 +14,8 @@
 
 在项目根目录执行 `python -m http.server 8080 --directory game`，再用桌面浏览器打开 `http://localhost:8080`。支持 WebGL 渲染与俯视回退。
 
+页面默认显示简体中文，可以在界面选择 English。
+
 ## English
 
 An original harbor-city action game with on-foot travel, driving, traffic, chases, missions, and local saves.
@@ -22,7 +24,9 @@ An original harbor-city action game with on-foot travel, driving, traffic, chase
 
 Run `python -m http.server 8080 --directory game` from the repository root and open `http://localhost:8080` in a desktop browser. The game includes a top-down fallback when WebGL is unavailable.
 
-[补充技术说明 / Additional technical notes](README.details.md)
+The interface opens in Simplified Chinese. Use the language menu to switch to English.
+
+[中文技术说明](README.details.zh.md) · [English technical notes](README.details.md)
 
 [make.fun 赛事 / Original bounty](https://make.fun/bounty/gta6-01)
 
