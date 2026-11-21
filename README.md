@@ -1,5 +1,7 @@
 # Harbor Afterhours
 
+[在线使用 / Open in browser](https://xialin99.github.io/makefun-harbor-afterhours/)
+
 [中文](#中文) · [English](#english)
 
 ![Preview](screenshots/01-south-docks-pursuit.jpg)
