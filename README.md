@@ -1,21 +1,38 @@
 # Harbor Afterhours
 
-An original open-city crime game with on-foot travel, vehicles, traffic, police, four story missions and local saves.
+[中文](#中文) · [English](#english)
 
-## Run
+![Preview](screenshots/01-south-docks-pursuit.jpg)
 
-Serve `game/` over local HTTP and open its index page in a desktop browser. The game uses the bundled Three.js renderer when WebGL is available and falls back to the overhead view if renderer initialization fails. Play does not require an external network connection.
+## 中文
 
-## Current status
+原创港城动作游戏，包含步行、驾驶、交通、追逐、任务和本地存档。
 
-The 3D prototype includes a following camera, city blocks, animated traffic and mission markers. Node regression tests cover entering and exiting cars, movement, mission gating, rewards and save/load. Browser rendering and the feel of the new camera are still unverified. Capture three or four images from the current browser build before creating the competition dossier. The game has not been submitted.
+### 本地运行
 
-These are experimental competition projects. No prize has been received.
+在项目根目录执行 `python -m http.server 8080 --directory game`，再用桌面浏览器打开 `http://localhost:8080`。支持 WebGL 渲染与俯视回退。
 
-## Repository contents
+## English
 
-Source code, the MIT license, and the competition provenance anchor are included. Wallet private keys, API credentials, raw chat logs, transcript bundles, local output folders and machine-specific settings are excluded. Vendored competition helpers retain their original notices.
+An original harbor-city action game with on-foot travel, driving, traffic, chases, missions, and local saves.
 
-## License
+### Run locally
 
-Game code is MIT licensed. The bundled Three.js distribution retains its license in `game/vendor/LICENSE`.
+Run `python -m http.server 8080 --directory game` from the repository root and open `http://localhost:8080` in a desktop browser. The game includes a top-down fallback when WebGL is unavailable.
+
+[补充技术说明 / Additional technical notes](README.details.md)
+
+[make.fun 赛事 / Original bounty](https://make.fun/bounty/gta6-01)
+
+## 许可证 / License
+
+MIT. See [LICENSE](LICENSE).
+
+赛事模板组件的授权见 [LICENSE-makefun.txt](LICENSE-makefun.txt)。
+
+Kit components are covered by [LICENSE-makefun.txt](LICENSE-makefun.txt).
+
+Three.js 保留其 [MIT 版权声明](game/vendor/LICENSE)。
+
+Three.js retains its [MIT license notice](game/vendor/LICENSE).
+

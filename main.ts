@@ -11,6 +11,9 @@ const images = existsSync(screenshots)
       .map(file => file.name)
   : [];
 if(images.length<3||images.length>4)throw Error('Provide 3 or 4 real browser screenshots before packaging the game.');
+if (images.some(name => !/^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$/.test(name))) {
+  throw Error('Screenshot names must start with a letter, digit, or underscore and fit within 128 characters.');
+}
 const gameOutput = join(out, 'game');
 const imageOutput = join(out, 'screenshots');
 const dossierOutput = join(out, 'dossier.json');
