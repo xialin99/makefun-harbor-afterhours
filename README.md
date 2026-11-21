@@ -8,6 +8,12 @@
 
 ## 中文
 
+### 第一次使用
+
+1. [打开游戏](https://xialin99.github.io/makefun-harbor-afterhours/)，点击 **开始新故事**。
+2. 按 **WASD** 走到车旁，按 **E** 上车。用 **W** 加速、**A/D** 转向，沿小地图的黄色路线行驶。
+3. 到达目的地后看左上方的下一条任务。按 **F5** 存档，重新打开时点 **继续已保存的故事**。
+
 原创港城动作游戏，包含步行、驾驶、交通、追逐、任务和本地存档。
 
 ### 本地运行
@@ -17,6 +23,12 @@
 页面默认显示简体中文，可以在界面选择 English。
 
 ## English
+
+### First use
+
+1. [Open the game](https://xialin99.github.io/makefun-harbor-afterhours/) and click **Start a new night**.
+2. Walk to the car with **WASD** and press **E** to get in. Hold **W** to accelerate, steer with **A/D**, and follow the yellow route.
+3. Read the next task in the upper left after you arrive. Press **F5** to save. Choose **Continue saved story** when you return.
 
 An original harbor-city action game with on-foot travel, driving, traffic, chases, missions, and local saves.
 
